@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cosmic Time Left</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Black cosmic background */
+    .cosmic-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 30% 20%, rgba(15, 25, 45, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(25, 35, 55, 0.15) 0%, transparent 50%),
+        #000;
+      z-index: -3;
+    }
+
+    /* Minimal stars */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+
+    .star {
+      position: absolute;
+      background: rgba(180, 200, 255, 0.6);
+      border-radius: 50%;
+      animation: subtle-twinkle 4s infinite ease-in-out;
+    }
+
+    @keyframes subtle-twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+
+    /* Scrambled text animation */
+    .scramble-text {
+      display: inline-block;
+      position: relative;
+    }
+
+    .scramble-text.scrambling {
+      animation: scramble 0.1s ease-in-out;
+    }
+
+    @keyframes scramble {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-1px); }
+      75% { transform: translateX(1px); }
+    }
+
+    /* Logo styling */
+    .logo {
+      position: absolute;
+      top: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #404040;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 
+        0 0 10px rgba(64, 64, 64, 0.5),
+        2px 2px 0px rgba(32, 32, 32, 0.8),
+        -1px -1px 0px rgba(80, 80, 80, 0.3);
+      opacity: 0.9;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #e6f0ff;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(230, 240, 255, 0.3);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #b8d4ff;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .timer-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .countdown {
+      display: flex;
+      gap: 2rem;
+      font-size: 2rem;
+      background: rgba(30, 40, 70, 0.15);
+      padding: 2rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(100, 130, 200, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .countdown:hover {
+      background: rgba(30, 40, 70, 0.25);
+      border-color: rgba(100, 130, 200, 0.3);
+    }
+
+    .time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 80px;
+    }
+
+    .time-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #d6e8ff;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 8px rgba(214, 232, 255, 0.4);
+    }
+
+    .label {
+      font-size: 1rem;
+      color: #8bb3ff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 400;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9rem;
+      color: #6699cc;
+      font-weight: 400;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .countdown {
+        gap: 1rem;
+        padding: 1.5rem;
+        font-size: 1.5rem;
+      }
+      
+      .time-value {
+        font-size: 1.5rem;
+      }
+      
+      .time-box {
+        min-width: 60px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .countdown {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+      }
+      
+      .time-box {
+        min-width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmic-background"></div>
+  <div class="stars" id="stars"></div>
+
+  <div class="logo">
+    <span class="scramble-text" data-text="ARCK">ARC</span>
+  </div>
+
+  <h1><span class="scramble-text" data-text="Time Left">Time Left</span></h1>
+
+  <div class="timer-container">
+    <div>
+      <h2><span class="scramble-text" data-text="First Level">First Level</span></h2>
+      <div class="countdown" id="timer1">
+        <div class="time-box">
+          <div class="time-value scramble-text" id="days1" data-text="0">0</div>
+          <div class="label">Days</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value scramble-text" id="hours1" data-text="0">0</div>
+          <div class="label">Hours</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value scramble-text" id="minutes1" data-text="0">0</div>
+          <div class="label">Minutes</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value" id="seconds1" data-text="0">0</div>
+          <div class="label">Seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2><span class="scramble-text" data-text="Second Level">Second Level</span></h2>
+      <div class="countdown" id="timer2">
+        <div class="time-box">
+          <div class="time-value scramble-text" id="days2" data-text="0">0</div>
+          <div class="label">Days</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value scramble-text" id="hours2" data-text="0">0</div>
+          <div class="label">Hours</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value scramble-text" id="minutes2" data-text="0">0</div>
+          <div class="label">Minutes</div>
+        </div>
+        <div class="time-box">
+          <div class="time-value" id="seconds2" data-text="0">0</div>
+          <div class="label">Seconds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer><span class="scramble-text" data-text="Time never stops ⏳ it just runs out for some.">Time never stops ⏳ but ends for some</span></footer>
+
+  <script>
+    // Create minimal stars
+    function createStars() {
+      const starsContainer = document.getElementById('stars');
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.width = `${Math.random() * 1.5 + 0.5}px`;
+        star.style.height = star.style.width;
+        star.style.animationDelay = `${Math.random() * 4}s`;
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Scrambled text animation
+    class TextScramble {
+      constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\/[]{}—=+*^?#________';
+        this.update = this.update.bind(this);
+      }
+
+      setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise((resolve) => this.resolve = resolve);
+        this.queue = [];
+        
+        for (let i = 0; i < length; i++) {
+          const from = oldText[i] || '';
+          const to = newText[i] || '';
+          const start = Math.floor(Math.random() * 40);
+          const end = start + Math.floor(Math.random() * 40);
+          this.queue.push({ from, to, start, end });
+        }
+        
+        this.frame = 0;
+        this.update();
+        return promise;
+      }
+
+      update() {
+        let output = '';
+        let complete = 0;
+        
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+          let { from, to, start, end, char } = this.queue[i];
+          
+          if (this.frame >= end) {
+            complete++;
+            output += to;
+          } else if (this.frame >= start) {
+            if (!char || Math.random() < 0.28) {
+              char = this.getRandomChar();
+              this.queue[i].char = char;
+            }
+            output += char;
+          } else {
+            output += from;
+          }
+        }
+        
+        this.el.innerHTML = output;
+        
+        if (complete === this.queue.length) {
+          this.resolve();
+        } else {
+          this.frameRequest = requestAnimationFrame(this.update);
+          this.frame++;
+        }
+      }
+
+      getRandomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+      }
+    }
+
+    // Initialize text scramble for all elements
+    function initializeTextScramble() {
+      const scrambleElements = document.querySelectorAll('.scramble-text');
+      scrambleElements.forEach((el, index) => {
+        const fx = new TextScramble(el);
+        const originalText = el.getAttribute('data-text') || el.innerText;
+        
+        // Start with scrambled text
+        el.innerHTML = originalText.split('').map(() => fx.getRandomChar()).join('');
+        
+        // Initial scramble animation
+        setTimeout(() => {
+          fx.setText(originalText);
+        }, index * 300 + 1000);
+
+        // Store the scramble instance for later use
+        el.scrambleFx = fx;
+      });
+    }
+
+    // Animate number changes with scramble effect (except seconds)
+    function animateNumberChange(element, newValue) {
+      if (element.scrambleFx && element.innerText !== newValue.toString()) {
+        element.setAttribute('data-text', newValue.toString());
+        element.scrambleFx.setText(newValue.toString());
+      } else if (!element.scrambleFx) {
+        // For elements without scramble (like seconds), just update normally
+        element.textContent = newValue;
+      }
+    }
+
+    function updateTimer(endDate, ids, completeMessage) {
+      const now = new Date().getTime();
+      const diff = endDate - now;
+
+      if (diff < 0) {
+        document.getElementById(ids.container).innerHTML = `<h3>${completeMessage}</h3>`;
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      // Animate number changes with scramble effect
+      animateNumberChange(document.getElementById(ids.days), days);
+      animateNumberChange(document.getElementById(ids.hours), hours);
+      animateNumberChange(document.getElementById(ids.minutes), minutes);
+      animateNumberChange(document.getElementById(ids.seconds), seconds);
+    }
+
+    function runTimers() {
+      const april2030 = new Date('April 7, 2030 00:00:00').getTime();
+      const aug26 = new Date('August 26, 2031 00:00:00').getTime();
+
+      updateTimer(april2030, {
+        container: 'timer1',
+        days: 'days1',
+        hours: 'hours1',
+        minutes: 'minutes1',
+        seconds: 'seconds1'
+      }, 'Times up');
+
+      updateTimer(aug26, {
+        container: 'timer2',
+        days: 'days2',
+        hours: 'hours2',
+        minutes: 'minutes2',
+        seconds: 'seconds2'
+      }, 'Second level times up');
+    }
+
+    // Initialize
+    createStars();
+    
+    // Initialize text scramble immediately
+    initializeTextScramble();
+    
+    setInterval(runTimers, 1000);
+    runTimers();
+  </script>
+</body>
+</html>
