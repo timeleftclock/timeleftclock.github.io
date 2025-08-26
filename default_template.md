@@ -98,4 +98,4 @@
 I commit to discipline, secrecy, and service to the mission."*  
 
 Signature: __________  
-Date: __________
+ 
